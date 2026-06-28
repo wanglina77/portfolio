@@ -1,0 +1,2475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>王丽娜 | AI产品经理</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #0e0e14;
+            --bg-tertiary: #14141c;
+            --text-primary: #ffffff;
+            --text-secondary: #9a9aaa;
+            --text-muted: #555566;
+            --accent: #00d4ff;
+            --accent-secondary: #0066ff;
+            --accent-glow: rgba(0, 212, 255, 0.15);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-light: rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Particle Canvas */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0.49;  /* 降低30%: 0.7 * 0.7 = 0.49 */
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: transparent;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(10,10,15,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: #00d4ff;
+            text-decoration: none;
+            letter-spacing: -0.04em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .logo span {
+            color: #00d4ff;
+            opacity: 1;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.75);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+            position: relative;
+            opacity: 0.75;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1.5px;
+            background: rgba(0,212,255,0.6);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ─── Hero Section — Vortek Light Style ─── */
+        .hero {
+            min-height: 760px;
+            display: flex;
+            align-items: center;
+            padding: 7rem 8% 5rem;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Dark grid background — particle-compatible */
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #0a0a1a;
+            background-image:
+                linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: -1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            flex: 1 1 auto;
+            min-width: 0;
+        }
+
+        .hero-wrap {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+            min-height: 600px;
+        }
+
+        /* AI Portrait — inside hero, right side */
+        .ai-portrait {
+            position: relative;
+            width: 420px;
+            height: 580px;
+            flex: 0 0 420px;
+            z-index: 10;
+            margin: 0;
+        }
+
+        .ai-portrait-frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .portrait-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: top center;
+            display: block;
+        }
+
+        /* Vortek concentric arcs — bottom right, matching VR image */
+        .vortek-arcs {
+            position: absolute;
+            bottom: -160px;
+            right: -160px;
+            width: 480px;
+            height: 480px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .arc {
+            position: absolute;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .arc-1 {
+            width: 440px;
+            height: 440px;
+            border: 1.5px solid rgba(0,212,255,0.25);
+        }
+
+        .arc-2 {
+            width: 320px;
+            height: 320px;
+            border: 1px dashed rgba(0,212,255,0.18);
+        }
+
+        .arc-3 {
+            width: 200px;
+            height: 200px;
+            border: 1px solid rgba(0,212,255,0.12);
+        }
+
+        /* Floating data cards — dark glass on light portrait */
+        .floating-card {
+            position: absolute;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0,212,255,0.25);
+            padding: 0.6rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: #e0e0e0;
+            z-index: 5;
+            animation: floatCard 4s ease-in-out infinite;
+            border-radius: 4px;
+        }
+
+        .floating-card .num {
+            color: #00d4ff;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: block;
+            letter-spacing: -0.02em;
+        }
+
+        .floating-card .lbl {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .fc-1 { top: 16px; right: 16px; animation-delay: 0s; }
+        .fc-2 { top: 50%; left: 16px; transform: translateY(-50%); animation-delay: 1s; }
+        .fc-3 { bottom: 16px; right: 16px; animation-delay: 2s; }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        @media (max-width: 1024px) {
+            .ai-portrait { width: 320px; height: 400px; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-wrap { flex-direction: column; }
+            .ai-portrait { width: 100%; max-width: 320px; height: 400px; margin: 2rem auto 0; }
+        }
+
+        .hero-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: rgba(0, 212, 255, 0.8);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .hero-tag::before {
+            content: '';
+            width: 36px;
+            height: 1.5px;
+            background: rgba(0, 212, 255, 0.6);
+        }
+
+        .hero-title {
+            font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 2rem;
+            letter-spacing: -0.04em;
+            color: #ffffff;
+        }
+
+        .hero-title .line {
+            display: block;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .hero-title .line:nth-child(1) { animation-delay: 0.1s; }
+        .hero-title .line:nth-child(2) { animation-delay: 0.2s; }
+        .hero-title .line:nth-child(3) { animation-delay: 0.3s; }
+
+        .hero-title .highlight {
+            color: #00d4ff;
+            position: relative;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.55);
+            max-width: 540px;
+            margin-bottom: 3rem;
+            line-height: 1.7;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.5s forwards;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.7s forwards;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-label {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+
+        .hero-cta {
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeInUp 0.8s ease 0.9s forwards;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 2rem;
+            background: transparent;
+            border: 1.5px solid rgba(0,212,255,0.5);
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.02em;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,212,255,0.15);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn:hover {
+            color: #ffffff;
+            border-color: #00d4ff;
+            background: rgba(0,212,255,0.1);
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn-primary {
+            background: rgba(0,212,255,0.15);
+            border-color: #00d4ff;
+            color: #00d4ff;
+        }
+
+        .btn-primary::before {
+            background: rgba(0,212,255,0.25);
+        }
+
+        .btn-primary:hover {
+            background: rgba(0,212,255,0.25);
+            color: #ffffff;
+        }
+
+        .btn-outline {
+            color: rgba(255,255,255,0.8);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+        .btn-outline::before {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-outline:hover {
+            border-color: rgba(255,255,255,0.6);
+            color: #ffffff;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 8rem 8%;
+            position: relative;
+            z-index: 1;
+            background: var(--bg-primary);
+        }
+
+        /* Hero bottom fade */
+        .hero-fade {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, var(--bg-primary));
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        /* Experience Section */
+        .experience {
+            background: var(--bg-secondary);
+            position: relative;
+            z-index: 0;
+            padding: 6rem 4%;
+        }
+
+        /* 异形拼接：experience 顶部为肖像留出 260px 空间，内容不被遮挡 */
+        .experience-portrait-space {
+            height: 260px;
+            pointer-events: none;
+        }
+
+        .timeline {
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            padding-left: 3rem;
+            padding-bottom: 4rem;
+            position: relative;
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.6s ease;
+        }
+
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 0.5rem;
+            width: 9px;
+            height: 9px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .company-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .timeline-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .timeline-role {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .timeline-desc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .timeline-desc li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-desc li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .timeline-achievements {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .achievement-badge {
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .achievement-badge strong {
+            color: var(--accent);
+        }
+
+        /* 异形项目展示区 */
+        .projects-showcase {
+            min-height: auto;
+            background: #050508;
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 6rem 4%;
+        }
+
+        /* 项目展示区容器 */
+        .projects-container {
+            width: 100%;
+            max-width: 1400px;
+            min-height: 700px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 4%;
+            position: relative;
+        }
+
+        /* 顶部项目导航 */
+        .projects-nav {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 2rem;
+            z-index: 10;
+            flex-wrap: nowrap;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.3s ease;
+            color: #9a9aaa;
+            margin: 0 2px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, #4dd0e1, #00a8cc);
+            color: #fff;
+            font-weight: 500;
+            border-color: transparent;
+            border-radius: 999px;
+            box-shadow: 0 0 25px rgba(77,208,225,0.5), 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-avatar {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item.active .nav-avatar {
+            background: transparent;
+            color: #5b9bff;
+            border-color: rgba(91,155,255,0.45);
+        }
+
+        .nav-title {
+            font-size: 0.9rem;
+        }
+
+        .nav-item.active .nav-title {
+            color: #fff;
+        }
+
+        /* 中间项目内容区 */
+        .projects-content {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            background: linear-gradient(145deg, #0f0f14 0%, #08080c 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 
+                0 30px 80px rgba(0,0,0,0.6),
+                inset 0 1px 0 rgba(255,255,255,0.08);
+        }
+
+        .project-slide {
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .project-slide.active {
+            display: flex;
+            flex-direction: row;
+            opacity: 1;
+        }
+
+        .project-detail {
+            flex: 1;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .project-logo {
+            margin-bottom: 2rem;
+        }
+
+        .logo-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        .project-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .project-period {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .project-metrics {
+            display: flex;
+            gap: 2.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            text-shadow: 0 0 20px rgba(0,212,255,0.3);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .tag {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* 右侧图片区 */
+        .project-image {
+            width: 45%;
+            min-width: 400px;
+            max-width: 600px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.15);
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 80%;
+            background: linear-gradient(145deg, #0a0a0d 0%, #050507 100%);
+            border: 1px dashed rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* 扇形叠加图片 */
+        .fan-images {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 350px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fan-img {
+            position: absolute;
+            width: 250px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 
+                0 0 40px rgba(0,212,255,0.4),
+                0 10px 30px rgba(0,0,0,0.5);
+            border: 2px solid rgba(0,212,255,0.3);
+            transition: all 0.4s ease;
+            object-fit: cover;
+        }
+
+        .fan-img-1 {
+            transform: rotate(-8deg) translateX(-15px);
+            z-index: 2;
+        }
+
+        .fan-img-2 {
+            transform: rotate(8deg) translateX(15px);
+            z-index: 1;
+        }
+
+        .fan-img:hover {
+            z-index: 10;
+            transform: rotate(0deg) translateX(0) scale(1.05);
+            box-shadow: 
+                0 0 60px rgba(0,212,255,0.6),
+                0 15px 40px rgba(0,0,0,0.6);
+        }
+
+        /* 项目3专属样式 - 上下错位左对齐 */
+        .fan-img-gov-1 {
+            width: 420px;
+            transform: rotate(-8deg) translateX(-60px) translateY(-50px) !important;
+            z-index: 2;
+        }
+
+        .fan-img-gov-2 {
+            width: 420px;
+            transform: rotate(8deg) translateX(20px) translateY(50px) !important;
+            z-index: 1;
+        }
+
+        .fan-img-gov-1:hover, .fan-img-gov-2:hover {
+            transform: rotate(0deg) translateX(0) translateY(0) scale(1.05) !important;
+        }
+
+        /* 项目3图片样式 - 与左侧文字高度匹配 */
+        .project3-images {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .gov-img {
+            width: 100%;
+            max-width: 360px;
+            height: auto;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            object-fit: contain;
+            transition: all 0.3s ease;
+        }
+
+        .gov-img:hover {
+            transform: scale(1.02);
+            border-color: rgba(0,212,255,0.3);
+        }
+
+        /* 右侧箭头导航 */
+        .projects-arrows {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .arrow-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(0,0,0,0.4);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .arrow-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0,212,255,0.15);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0,212,255,0.3);
+        }
+
+        .arrow-btn:disabled {
+            opacity: 0.2;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+
+        .arrow-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .projects-container {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+                padding: 4rem 5%;
+            }
+
+            .projects-nav {
+                width: 100%;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                gap: 6px;
+                margin-bottom: 1.5rem;
+            }
+
+            .nav-item {
+                flex-shrink: 0;
+                border-radius: 999px;
+                border: 1px solid rgba(255,255,255,0.05);
+                justify-content: center;
+            }
+
+            .nav-item.active {
+                border-color: transparent;
+                background: linear-gradient(90deg, #4dd0e1, #00a8cc);
+                color: #fff;
+                font-weight: 500;
+                border-radius: 999px;
+                box-shadow: 0 0 25px rgba(77,208,225,0.5), 0 4px 15px rgba(0,0,0,0.3);
+            }
+
+            .nav-title {
+                display: inline;
+            }
+
+            .projects-content {
+                width: 100%;
+                max-width: none;
+                border-radius: 24px;
+                height: auto;
+                min-height: 500px;
+            }
+
+            .project-slide {
+                flex-direction: row;
+            }
+
+            .project-detail {
+                padding: 2rem;
+            }
+
+            .project-image {
+                width: 45%;
+                min-width: 300px;
+            }
+        }
+
+        /* Education Section */
+        .education {
+            background: var(--bg-secondary);
+            position: relative;
+            padding: 6rem 4% 8rem;
+        }
+
+        .education-container {
+            max-width: 1000px;
+            margin: 3rem auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .edu-card {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            padding: 2.5rem;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #111118 0%, #0a0a11 100%);
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .edu-card:hover {
+            border-color: rgba(0,212,255,0.25);
+            box-shadow: 0 10px 40px rgba(0,212,255,0.08);
+            transform: translateY(-4px);
+        }
+
+        .edu-icon {
+            font-size: 2.8rem;
+            flex-shrink: 0;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: rgba(0,212,255,0.06);
+            border: 1px solid rgba(0,212,255,0.1);
+        }
+
+        .edu-content {
+            flex: 1;
+        }
+
+        .edu-school {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+
+        .edu-major {
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+        }
+
+        .edu-period {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+        }
+
+        .edu-desc {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .edu-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+
+        /* Skills Section - 高级感卡轮播 */
+        .skills {
+            background: #0a0a0f;
+            padding: 6rem 4% 8rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .skills-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 2rem;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .skills-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.15;
+            color: #fff;
+            letter-spacing: -0.5px;
+        }
+
+        .skills-title .accent {
+            background: linear-gradient(90deg, #00d4ff, #7c8aff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-style: italic;
+        }
+
+        .skills-controls {
+            display: flex;
+            gap: 12px;
+            flex-shrink: 0;
+            justify-content: flex-end;
+        }
+
+        .skills-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .skills-arrow:hover {
+            background: #00d4ff;
+            border-color: #00d4ff;
+            color: #000;
+        }
+
+        .skills-arrow:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .skills-carousel {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            height: 520px;
+        }
+
+        .skills-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .skill-card {
+            width: 28%;
+            height: 480px;
+            border-radius: 24px;
+            position: absolute;
+            top: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            transform-origin: center center;
+            transition: all 0.7s cubic-bezier(0.65, 0, 0.35, 1);
+            border-style: solid;
+            border-width: 1.5px;
+            border-color: transparent;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.25);
+        }
+
+        /* 中间卡：放大、居中 + 边框发光 */
+        .skill-card-active {
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.12);
+            z-index: 3;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 50px var(--card-glow, rgba(0,212,255,0.25));
+            opacity: 1;
+            filter: brightness(1);
+            border-width: 2px;
+        }
+
+        /* 左侧卡：透视倾斜 */
+        .skill-card-left {
+            left: 50%;
+            transform: translate(calc(-50% - 310px), -50%) perspective(1200px) rotateY(18deg) scale(0.85);
+            z-index: 1;
+            opacity: 0.55;
+            filter: brightness(0.7);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        /* 右侧卡：透视倾斜 */
+        .skill-card-right {
+            left: 50%;
+            transform: translate(calc(-50% + 310px), -50%) perspective(1200px) rotateY(-18deg) scale(0.85);
+            z-index: 1;
+            opacity: 0.55;
+            filter: brightness(0.7);
+            border-color: rgba(255,255,255,0.06);
+        }
+
+        /* 隐藏卡 */
+        .skill-card-hidden {
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            z-index: 0;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 高级感背景 - 渐变 + 动态光晕 + 网格 */
+        .skill-card-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+            z-index: 0;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.7;
+            animation: blobFloat 12s ease-in-out infinite;
+        }
+
+        .bg-blob-1 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,212,255,0.6), transparent 70%);
+            top: -80px;
+            right: -50px;
+            animation-delay: 0s;
+        }
+
+        .bg-blob-2 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(124,138,255,0.5), transparent 70%);
+            bottom: -60px;
+            left: -40px;
+            animation-delay: 4s;
+        }
+
+        .bg-blob-3 {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,140,90,0.4), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: 8s;
+        }
+
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 80%);
+        }
+
+        .bg-inner-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            box-shadow: inset 0 0 60px 15px var(--card-glow, rgba(0,212,255,0.1));
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -30px) scale(1.1); }
+            66% { transform: translate(-30px, 40px) scale(0.95); }
+        }
+
+        .bg-blob-3 {
+            animation-name: blobFloat3;
+        }
+
+        @keyframes blobFloat3 {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-30%, -70%) scale(1.2); }
+        }
+
+        .skill-card-inner {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            padding: 32px 28px;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+
+        .skill-card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+            filter: drop-shadow(0 4px 20px rgba(0,212,255,0.4));
+        }
+
+        .skill-card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.4rem;
+            letter-spacing: -0.3px;
+        }
+
+        .skill-card-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        .skill-card-tag {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 999px;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.85);
+            backdrop-filter: blur(8px);
+        }
+
+        .skill-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .skill-card-nav {
+            display: flex;
+            gap: 12px;
+        }
+
+        .skill-card-nav-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .skill-card-nav-btn:hover {
+            background: rgba(0,212,255,0.2);
+            border-color: rgba(0,212,255,0.5);
+        }
+
+        .skill-card-meta {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.5);
+            font-weight: 500;
+        }
+
+        .skill-card-arrow {
+            font-size: 1.4rem;
+            color: #00d4ff;
+            transition: transform 0.3s ease;
+        }
+
+        .skill-card:hover .skill-card-arrow {
+            transform: translateX(6px);
+        }
+
+        @media (max-width: 768px) {
+            .skill-card {
+                min-width: 100%;
+                height: 460px;
+            }
+            .skills-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 24px;
+            }
+        }
+
+        /* Contact Section */
+        .contact-content {
+            text-align: center;
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .contact-avatar {
+            margin-bottom: 1.5rem;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0,212,255,0.3);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .contact-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: nowrap;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .contact-link:hover {
+            color: var(--accent);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 8%;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            section {
+                padding: 5rem 5%;
+            }
+
+            .hero {
+                padding: 0 5%;
+            }
+
+            .hero-stats {
+                gap: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .timeline-item {
+                padding-left: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <nav>
+        <a href="#" class="logo">王<span>丽娜</span></a>
+        <ul class="nav-links">
+            <li><a href="#experience">工作经历</a></li>
+            <li><a href="#projects">项目案例</a></li>
+            <li><a href="#skills">技能证书</a></li>
+            <li><a href="#education">教育经历</a></li>
+            <li><a href="#contact">联系方式</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-wrap">
+            <div class="hero-content">
+                <div class="hero-tag">AI Product Manager</div>
+                <h1 class="hero-title">
+                    <span class="line">打造<span class="highlight">亿级营收</span></span>
+                    <span class="line">B端产品的</span>
+                    <span class="line">AI产品经理</span>
+                </h1>
+                <p class="hero-subtitle">
+                    9年产品经验，B端产品设计与C端用户增长，专注AI赋能与RAG系统设计，主导百万日活C端产品，擅长政企大客户交付。
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">500万+</span>
+                        <span class="stat-label">日活峰值</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">1亿+</span>
+                        <span class="stat-label">年营收</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">9年</span>
+                        <span class="stat-label">产品经验</span>
+                    </div>
+                </div>
+                <div class="hero-cta">
+                    <a href="#experience" class="btn btn-primary">查看经历 →</a>
+                </div>
+            </div>
+
+            <div class="ai-portrait">
+                <div class="ai-portrait-frame">
+                    <img src="portrait-nobg.png" alt="王丽娜" class="portrait-img">
+
+                    <!-- Floating data cards -->
+                    <div class="floating-card fc-1">
+                        <span class="num">500万+</span>
+                        <span class="lbl">DAU Peak</span>
+                    </div>
+                    <div class="floating-card fc-2">
+                        <span class="num">9 Years</span>
+                        <span class="lbl">Product Exp</span>
+                    </div>
+                    <div class="floating-card fc-3">
+                        <span class="num">RAG Expert</span>
+                        <span class="lbl">AI Architecture</span>
+                    </div>
+                </div>
+
+                <!-- Vortek-style concentric arcs -->
+                <div class="vortek-arcs">
+                    <div class="arc arc-1"></div>
+                    <div class="arc arc-2"></div>
+                    <div class="arc arc-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-fade"></div>
+    </section>
+
+    <section class="experience" id="experience">
+        <div class="section-header">
+            <h2 class="section-title">工作经历</h2>
+            <div class="section-tag">Experience</div>
+        </div>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <h3 class="company-name">北京数字认证股份有限公司</h3>
+                    <span class="timeline-date">2021.11 — 2024.09</span>
+                </div>
+                <div class="timeline-role">高级产品经理 · 数据安全行业</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>负责创新产品全生命周期管理，推动AI运维知识库、隐私计算平台等产品规模化落地</li>
+                        <li>搭建全国售前培训体系，完成两大区300+售前人员培训认证</li>
+                        <li>主导北京市密码局、公安一所等头部政企项目，落地千万级标杆项目</li>
+                    </ul>
+                </div>
+                <div class="timeline-achievements">
+                    <span class="achievement-badge"><strong>年营收破亿</strong> 同比增长16%</span>
+                    <span class="achievement-badge"><strong>市场占有率</strong> 提升9%</span>
+                    <span class="achievement-badge"><strong>单项目均价</strong> 2000万+</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <h3 class="company-name">腾讯科技有限责任公司</h3>
+                    <span class="timeline-date">2019.04 — 2021.09</span>
+                </div>
+                <div class="timeline-role">产品经理 · 游戏分发行业</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>主导新手引导优化、试玩资格激励、排行榜荣誉体系等创新模块设计</li>
+                        <li>从0到1推动小游戏产品接入微视、腾讯体育等多个APP</li>
+                        <li>接入算法推荐引擎实现精准推送，搭建全链路用户行为数据埋点体系</li>
+                    </ul>
+                </div>
+                <div class="timeline-achievements">
+                    <span class="achievement-badge"><strong>日活</strong> 500万+</span>
+                    <span class="achievement-badge"><strong>推荐点击率</strong> 提升18%</span>
+                    <span class="achievement-badge"><strong>付费率</strong> 提升5%</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-header">
+                    <h3 class="company-name">中投摩根信息技术（北京）</h3>
+                    <span class="timeline-date">2015.12 — 2019.03</span>
+                </div>
+                <div class="timeline-role">产品经理 · 投资理财行业</div>
+                <div class="timeline-desc">
+                    <ul>
+                        <li>主导借款端后台管理系统从0到1搭建，实现借款全流程线上化管理</li>
+                        <li>负责移动端APP与PC官网全站优化升级，完成监管备案合规迭代</li>
+                        <li>搭建全链路数据埋点体系，协同市场、运营支撑活动落地</li>
+                    </ul>
+                </div>
+                <div class="timeline-achievements">
+                    <span class="achievement-badge"><strong>转化率提升</strong> 18%</span>
+                    <span class="achievement-badge"><strong>流程简化</strong> 30%</span>
+                    <span class="achievement-badge"><strong>办理时间</strong> 2天→0.5天</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 异形项目展示区 -->
+    <section class="projects-showcase" id="projects">
+        <div class="section-header">
+            <h2 class="section-title">项目案例</h2>
+            <div class="section-tag">Projects</div>
+        </div>
+        <div class="projects-container">
+            <!-- 左侧项目导航 -->
+            <div class="projects-nav">
+                <div class="nav-item active" data-project="0">
+                    <div class="nav-avatar">密码</div>
+                    <span class="nav-title">密码服务平台</span>
+                </div>
+                <div class="nav-item" data-project="1">
+                    <div class="nav-avatar">RAG</div>
+                    <span class="nav-title">AI运维知识库</span>
+                </div>
+                <div class="nav-item" data-project="2">
+                    <div class="nav-avatar">政务</div>
+                    <span class="nav-title">信创监管平台</span>
+                </div>
+                <div class="nav-item" data-project="3">
+                    <div class="nav-avatar">游戏</div>
+                    <span class="nav-title">游戏中心</span>
+                </div>
+                <div class="nav-item" data-project="4">
+                    <div class="nav-avatar">小游戏</div>
+                    <span class="nav-title">小游戏专区</span>
+                </div>
+                <div class="nav-item" data-project="5">
+                    <div class="nav-avatar">金融</div>
+                    <span class="nav-title">投资理财平台</span>
+                </div>
+            </div>
+
+            <!-- 中间项目详情 -->
+            <div class="projects-content">
+                <!-- 项目1: 密码服务平台产品建设 -->
+                <div class="project-slide active" data-index="0">
+                    <div class="project-detail">
+                        <h3 class="project-name">密码服务平台产品建设</h3>
+                        <p class="project-period">2021.12 — 2025.01</p>
+                        <p class="project-desc">
+                            主导云服务密码产品设计，优化密码资源池管理、密钥管理、证书管理、实时监控告警等核心模块，降低技术依赖；构建多维度可视化大屏，实现密码服务全链路实时监控与态势感知；搭建云开放平台自助订阅体系，设计用户分层、功能分层的个性化报价策略。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">破亿</span>
+                                <span class="metric-label">年营收</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">50+</span>
+                                <span class="metric-label">密评交付</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">36%</span>
+                                <span class="metric-label">成本降低</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">密码服务</span>
+                            <span class="tag">云平台</span>
+                            <span class="tag">可视化</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <div class="fan-images">
+                            <img src="mifu11.png" alt="密码服务1" class="fan-img fan-img-gov-1">
+                            <img src="mifu22png.png" alt="密码服务2" class="fan-img fan-img-gov-2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目2: AI运维知识库（RAG系统）-->
+                <div class="project-slide" data-index="1">
+                    <div class="project-detail">
+                        <h3 class="project-name">AI运维知识库（RAG系统）</h3>
+                        <p class="project-period">2025.01 — 2025.10</p>
+                        <p class="project-desc">
+                            主导LLM模型选型；设计文档分块策略（滑动窗口+语义分块）、混合检索（向量+关键词）、Reranking重排序、多轮对话上下文管理；搭建检索性能、方案质量、系统稳定性、用户行为、成本监控五大监控体系，实现数据驱动的产品迭代。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">1.8s</span>
+                                <span class="metric-label">P50响应</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">85%+</span>
+                                <span class="metric-label">准确率</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">200万</span>
+                                <span class="metric-label">年节省</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">RAG</span>
+                            <span class="tag">LLM</span>
+                            <span class="tag">Prompt工程</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <div class="fan-images">
+                            <img src="ai_ops_page_1.png" alt="AI运维1" class="fan-img fan-img-gov-1">
+                            <img src="ai_ops_page_2.png" alt="AI运维2" class="fan-img fan-img-gov-2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目3: 政务信创终端监管产品建设 -->
+                <div class="project-slide" data-index="2">
+                    <div class="project-detail">
+                        <h3 class="project-name">政务信创终端监管产品建设</h3>
+                        <p class="project-period">2025.10 — 2026.01</p>
+                        <p class="project-desc">
+                            主导与国家密码局、新创监管中心的跨单位协作，完成产品需求沟通与0→1上线交付；设计并落地政务信创终端台账梳理与动态管理机制，构建终端安全管控、使用监测与预警态势感知的一体化平台。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">百万+</span>
+                                <span class="metric-label">终端节点</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">可视化</span>
+                                <span class="metric-label">信创态势</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">全链路</span>
+                                <span class="metric-label">安全监管</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">信创</span>
+                            <span class="tag">政务</span>
+                            <span class="tag">监管平台</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <!-- 扇形叠加图片容器 -->
+                        <div class="fan-images">
+                            <img src="gov1.png" alt="政务信创1" class="fan-img fan-img-gov-1">
+                            <img src="gov2.png" alt="政务信创2" class="fan-img fan-img-gov-2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目4: 游戏中心产品迭代创新 -->
+                <div class="project-slide" data-index="3">
+                    <div class="project-detail">
+                        <h3 class="project-name">游戏中心产品迭代创新</h3>
+                        <p class="project-period">2019.06 — 2020.09</p>
+                        <p class="project-desc">
+                            主导新手引导优化、试玩资格激励、最近在玩推荐、排行榜荣誉体系等创新模块设计，策划首发推送精准触达机制；接入算法推荐引擎实现游戏与内容的精准内容推送；搭建全链路用户行为数据埋点体系，建立AB测试快速迭代验证机制。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">500万+</span>
+                                <span class="metric-label">日活规模</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">18%</span>
+                                <span class="metric-label">点击率提升</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">数据驱动</span>
+                                <span class="metric-label">产品迭代</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">用户增长</span>
+                            <span class="tag">智能推荐</span>
+                            <span class="tag">AB测试</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <!-- 扇形叠加图片容器 -->
+                        <div class="fan-images">
+                            <img src="game_center1.png" alt="游戏中心1" class="fan-img fan-img-1">
+                            <img src="game_center2.png" alt="游戏中心2" class="fan-img fan-img-2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目5: 腾讯小游戏专区打造 -->
+                <div class="project-slide" data-index="4">
+                    <div class="project-detail">
+                        <h3 class="project-name">腾讯小游戏专区打造</h3>
+                        <p class="project-period">2020.09 — 2021.09</p>
+                        <p class="project-desc">
+                            从0到1推动小游戏SDK接入微视、腾讯体育、片多多等多渠道，实现跨平台无缝运行；打造中心化小游戏专区，增设智能小助手，整合分散资源位，搭建全链路数据看板，数据驱动策略优化。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">1亿+</span>
+                                <span class="metric-label">累计用户</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">20%</span>
+                                <span class="metric-label">点击率提升</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">50%</span>
+                                <span class="metric-label">分发效率</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">小游戏</span>
+                            <span class="tag">SDK</span>
+                            <span class="tag">跨平台</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <!-- 扇形叠加图片容器 -->
+                        <div class="fan-images">
+                            <img src="game1.png" alt="小游戏专区1" class="fan-img fan-img-1">
+                            <img src="game2.png" alt="小游戏专区2" class="fan-img fan-img-2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目6: 投资理财平台产品设计 -->
+                <div class="project-slide" data-index="5">
+                    <div class="project-detail">
+                        <h3 class="project-name">投资理财平台产品设计</h3>
+                        <p class="project-period">2016.01 — 2019.05</p>
+                        <p class="project-desc">
+                            主导借款端后台管理系统从0到1搭建，独立完成竞品调研、需求分析、功能规划、原型设计、信息架构与交互流程梳理，实现借款全流程线上化管理；负责移动端APP与PC官网全站优化升级，依据监管备案要求完成功能迭代与合规完善。
+                        </p>
+                        <div class="project-metrics">
+                            <div class="metric">
+                                <span class="metric-value">0→1</span>
+                                <span class="metric-label">系统搭建</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">18%</span>
+                                <span class="metric-label">转化率提升</span>
+                            </div>
+                            <div class="metric">
+                                <span class="metric-value">2天→0.5天</span>
+                                <span class="metric-label">办理时间</span>
+                            </div>
+                        </div>
+                        <div class="project-tags">
+                            <span class="tag">B端系统</span>
+                            <span class="tag">C端产品</span>
+                            <span class="tag">合规迭代</span>
+                        </div>
+                    </div>
+                    <div class="project-image">
+                        <!-- 扇形叠加图片容器 -->
+                        <div class="fan-images">
+                            <img src="finance1.png" alt="中投摩根1" class="fan-img fan-img-1">
+                            <img src="finance2.png" alt="中投摩根2" class="fan-img fan-img-2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills" id="skills">
+        <div class="section-header">
+            <h2 class="section-title">技能证书</h2>
+            <div class="section-tag">Capabilities</div>
+        </div>
+
+
+        <div class="skills-carousel">
+            <div class="skills-track" id="skillsTrack">
+                <!-- 卡片 1: 产品技能 -->
+                <div class="skill-card skill-card-active" data-index="0" style="border-color: rgba(0,212,255,0.5); --card-glow: rgba(0,212,255,0.12);">
+                    <div class="skill-card-bg" style="--bg-1: #1a1a2e; --bg-2: #16213e; --bg-3: #0f3460;">
+                        <div class="bg-blob bg-blob-1"></div>
+                        <div class="bg-blob bg-blob-2"></div>
+                        <div class="bg-blob bg-blob-3"></div>
+                        <div class="bg-grid"></div>
+                        <div class="bg-inner-glow"></div>
+                    </div>
+                    <div class="skill-card-inner">
+                        <div class="skill-card-icon">📐</div>
+                        <h3 class="skill-card-title">产品技能</h3>
+                        <p class="skill-card-subtitle">9年产品实战 · B端+C端</p>
+                        <div class="skill-card-tags">
+                            <span class="skill-card-tag">用户研究</span>
+                            <span class="skill-card-tag">需求分析</span>
+                            <span class="skill-card-tag">原型设计</span>
+                            <span class="skill-card-tag">PRD 撰写</span>
+                            <span class="skill-card-tag">用户体验优化</span>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-card-meta">05 Skill</span>
+                            <div class="skill-card-nav">
+                                <button class="skill-card-nav-btn" onclick="prevSkill()" aria-label="上一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <button class="skill-card-nav-btn" onclick="nextSkill()" aria-label="下一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 2: AI 能力 -->
+                <div class="skill-card" data-index="1" style="border-color: rgba(139,92,246,0.5); --card-glow: rgba(139,92,246,0.12);">
+                    <div class="skill-card-bg" style="--bg-1: #2a1a3e; --bg-2: #1a0f3e; --bg-3: #3a1a5e;">
+                        <div class="bg-blob bg-blob-1"></div>
+                        <div class="bg-blob bg-blob-2"></div>
+                        <div class="bg-blob bg-blob-3"></div>
+                        <div class="bg-grid"></div>
+                        <div class="bg-inner-glow"></div>
+                    </div>
+                    <div class="skill-card-inner">
+                        <div class="skill-card-icon">🤖</div>
+                        <h3 class="skill-card-title">AI 能力</h3>
+                        <p class="skill-card-subtitle">RAG · Prompt · vibe coding</p>
+                        <div class="skill-card-tags">
+                            <span class="skill-card-tag">RAG 检索增强生成</span>
+                            <span class="skill-card-tag">知识库搭建</span>
+                            <span class="skill-card-tag">Prompt 工程</span>
+                            <span class="skill-card-tag">AI 对话设计</span>
+                            <span class="skill-card-tag">意图识别</span>
+                            <span class="skill-card-tag">vibe coding</span>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-card-meta">04 Skill</span>
+                            <div class="skill-card-nav">
+                                <button class="skill-card-nav-btn" onclick="prevSkill()" aria-label="上一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <button class="skill-card-nav-btn" onclick="nextSkill()" aria-label="下一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 3: 项目管理 -->
+                <div class="skill-card" data-index="2" style="border-color: rgba(34,197,94,0.5); --card-glow: rgba(34,197,94,0.12);">
+                    <div class="skill-card-bg" style="--bg-1: #1a2e1a; --bg-2: #0f3e16; --bg-3: #1a5e2a;">
+                        <div class="bg-blob bg-blob-1"></div>
+                        <div class="bg-blob bg-blob-2"></div>
+                        <div class="bg-blob bg-blob-3"></div>
+                        <div class="bg-grid"></div>
+                        <div class="bg-inner-glow"></div>
+                    </div>
+                    <div class="skill-card-inner">
+                        <div class="skill-card-icon">⚡</div>
+                        <h3 class="skill-card-title">项目管理</h3>
+                        <p class="skill-card-subtitle">敏捷 · 协作 · 数据驱动</p>
+                        <div class="skill-card-tags">
+                            <span class="skill-card-tag">敏捷开发</span>
+                            <span class="skill-card-tag">跨团队协作</span>
+                            <span class="skill-card-tag">数据驱动决策</span>
+                            <span class="skill-card-tag">产品迭代</span>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-card-meta">03 Skill</span>
+                            <div class="skill-card-nav">
+                                <button class="skill-card-nav-btn" onclick="prevSkill()" aria-label="上一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <button class="skill-card-nav-btn" onclick="nextSkill()" aria-label="下一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 4: 工具使用 -->
+                <div class="skill-card" data-index="3" style="border-color: rgba(245,158,11,0.5); --card-glow: rgba(245,158,11,0.12);">
+                    <div class="skill-card-bg" style="--bg-1: #2e2a1a; --bg-2: #3e1a0f; --bg-3: #5e3a1a;">
+                        <div class="bg-blob bg-blob-1"></div>
+                        <div class="bg-blob bg-blob-2"></div>
+                        <div class="bg-blob bg-blob-3"></div>
+                        <div class="bg-grid"></div>
+                        <div class="bg-inner-glow"></div>
+                    </div>
+                    <div class="skill-card-inner">
+                        <div class="skill-card-icon">🛠️</div>
+                        <h3 class="skill-card-title">工具使用</h3>
+                        <p class="skill-card-subtitle">设计 · 协作 · 效率</p>
+                        <div class="skill-card-tags">
+                            <span class="skill-card-tag">Codex / Cursor</span>
+                            <span class="skill-card-tag">Figma</span>
+                            <span class="skill-card-tag">Axure</span>
+                            <span class="skill-card-tag">Pixso</span>
+                            <span class="skill-card-tag">墨刀</span>
+                            <span class="skill-card-tag">Xmind / Visio</span>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-card-meta">02 Tools</span>
+                            <div class="skill-card-nav">
+                                <button class="skill-card-nav-btn" onclick="prevSkill()" aria-label="上一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <button class="skill-card-nav-btn" onclick="nextSkill()" aria-label="下一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片 5: 荣誉奖励 -->
+                <div class="skill-card" data-index="4" style="border-color: rgba(239,68,68,0.5); --card-glow: rgba(239,68,68,0.12);">
+                    <div class="skill-card-bg" style="--bg-1: #3e1a1a; --bg-2: #3e0f0f; --bg-3: #5e1a1a;">
+                        <div class="bg-blob bg-blob-1"></div>
+                        <div class="bg-blob bg-blob-2"></div>
+                        <div class="bg-blob bg-blob-3"></div>
+                        <div class="bg-grid"></div>
+                        <div class="bg-inner-glow"></div>
+                    </div>
+                    <div class="skill-card-inner">
+                        <div class="skill-card-icon">🏆</div>
+                        <h3 class="skill-card-title">荣誉奖励</h3>
+                        <p class="skill-card-subtitle">学业 · 职场 · 创新</p>
+                        <div class="skill-card-tags">
+                            <span class="skill-card-tag">国家奖学金</span>
+                            <span class="skill-card-tag">创业大赛创新奖</span>
+                            <span class="skill-card-tag">优秀员工</span>
+                        </div>
+                        <div class="skill-card-footer">
+                            <span class="skill-card-meta">01 Awards</span>
+                            <div class="skill-card-nav">
+                                <button class="skill-card-nav-btn" onclick="prevSkill()" aria-label="上一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                </button>
+                                <button class="skill-card-nav-btn" onclick="nextSkill()" aria-label="下一张">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 教育经历 -->
+    <section class="education" id="education">
+        <div class="section-header">
+            <h2 class="section-title">教育经历</h2>
+            <div class="section-tag">Education</div>
+        </div>
+        <div class="education-container">
+            <!-- 北京理工大学 -->
+            <div class="edu-card">
+                <div class="edu-icon">🎓</div>
+                <div class="edu-content">
+                    <h3 class="edu-school">北京理工大学</h3>
+                    <p class="edu-major">工商管理 · 全日制硕士</p>
+                    <p class="edu-period">2024.09 — 2026.06</p>
+                    <p class="edu-desc">负责新生咨询/导师对接/复试统筹；参与非遗创业项目，主导方案设计与路演，获项目创新奖。</p>
+                </div>
+            </div>
+            <!-- 唐山学院 -->
+            <div class="edu-card">
+                <div class="edu-icon">📘</div>
+                <div class="edu-content">
+                    <h3 class="edu-school">唐山学院</h3>
+                    <p class="edu-major">电子信息工程 · 全日制本科</p>
+                    <p class="edu-period">2011.09 — 2015.06</p>
+                    <p class="edu-desc">学生会组织部部长，策划执行大型校园活动10余场，单场参与超150人。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-content">
+            <div class="contact-avatar">
+                <img src="avatar.png" alt="" class="contact-avatar-img">
+            </div>
+            <div class="section-tag">Contact</div>
+            <h2 class="contact-title">期待与您合作</h2>
+            <p class="contact-subtitle">
+                专注于AI产品设计、B端产品设计与C端用户增长与产品商业化，欢迎交流探讨。
+            </p>
+            <div class="contact-links">
+                <span class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                        <path d="M6 12v5c0 1.66 4 3 9 3s9-1.34 9-3v-5"></path>
+                    </svg>
+                    硕士
+                </span>
+                <a href="mailto:wendyok007@163.com" class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    wendyok007@163.com
+                </a>
+                <a href="tel:15600900350" class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                    15600900350
+                </a>
+                <span class="contact-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                        <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                    河北邯郸 / 北京
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 王丽娜 · AI产品经理 · 北京理工大学</p>
+    </footer>
+
+    <script>
+        // ── 导航滚动背景 ──
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseX = 0;
+        let mouseY = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.4;  // 降低50%
+                this.speedY = (Math.random() - 0.5) * 0.4;  // 降低50%
+                this.opacity = Math.random() * 0.56 + 0.21;  // 降低30% (原0.8+0.3 -> 0.56+0.21)
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Mouse interaction
+                const dx = mouseX - this.x;
+                const dy = mouseY - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    const force = (150 - distance) / 150;
+                    this.x -= dx * force * 0.02;
+                    this.y -= dy * force * 0.02;
+                }
+
+                // Wrap around screen
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 212, 255, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.min(150, Math.floor(window.innerWidth / 12));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 160) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 212, 255, ${0.245 * (1 - distance / 160)})`;  // 降低30%
+                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            connectParticles();
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Mouse tracking
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            observer.observe(item);
+        });
+
+        // ======================
+        // 项目展示区切换逻辑
+        // ======================
+        const navItems = document.querySelectorAll('.nav-item');
+        const projectSlides = document.querySelectorAll('.project-slide');
+        let currentProject = 0;
+
+        function showProject(index) {
+            // 边界检查
+            if (index < 0) index = projectSlides.length - 1;
+            if (index >= projectSlides.length) index = 0;
+            
+            currentProject = index;
+            
+            // 更新导航项
+            navItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            
+            // 更新幻灯片
+            projectSlides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+        }
+
+        // 项目案例自动轮播
+        let projectAutoplay;
+
+        function startProjectAutoplay() {
+            projectAutoplay = setInterval(() => {
+                showProject(currentProject + 1);
+            }, 3000);
+        }
+
+        function resetProjectAutoplay() {
+            clearInterval(projectAutoplay);
+            startProjectAutoplay();
+        }
+
+        // 导航点击事件
+        navItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                showProject(index);
+                resetProjectAutoplay();
+            });
+        });
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                showProject(currentProject - 1);
+                resetProjectAutoplay();
+            } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                showProject(currentProject + 1);
+                resetProjectAutoplay();
+            }
+        });
+
+        // 初始化
+        showProject(0);
+        startProjectAutoplay();
+
+        // 悬停暂停/恢复自动轮播
+        const projectsContent = document.querySelector('.projects-content');
+        projectsContent.addEventListener('mouseenter', () => clearInterval(projectAutoplay));
+        projectsContent.addEventListener('mouseleave', startProjectAutoplay);
+
+        // ======================
+        // 技能区卡轮播（纯3D视觉，无线循环）
+        // ======================
+        const skillCards = Array.from(document.querySelectorAll('.skill-card'));
+        // 左右翻页按钮已移除
+        const totalCards = skillCards.length;
+        let skillIndex = 0;
+        let skillAutoplay;
+
+        function updateSkills() {
+            skillCards.forEach((card, i) => {
+                card.classList.remove('skill-card-active', 'skill-card-left', 'skill-card-right', 'skill-card-hidden');
+                const dist = ((i - skillIndex + totalCards) % totalCards);
+                // 归一化到 -2..2 范围
+                const norm = dist > totalCards / 2 ? dist - totalCards : dist;
+                if (norm === 0) card.classList.add('skill-card-active');
+                else if (norm === 1 || norm === -(totalCards - 1)) card.classList.add('skill-card-left');
+                else if (norm === -1 || norm === totalCards - 1) card.classList.add('skill-card-right');
+                else card.classList.add('skill-card-hidden');
+            });
+        }
+
+        function nextSkill() {
+            skillIndex = (skillIndex + 1) % totalCards;
+            updateSkills();
+        }
+
+        function prevSkill() {
+            skillIndex = (skillIndex - 1 + totalCards) % totalCards;
+            updateSkills();
+        }
+
+        function startAutoplay() {
+            skillAutoplay = setInterval(prevSkill, 4000);
+        }
+
+        function resetAutoplay() {
+            clearInterval(skillAutoplay);
+            startAutoplay();
+        }
+
+        // 翻页按钮已移除，保留自动轮播
+
+        const skillsCarousel = document.querySelector('.skills-carousel');
+        skillsCarousel.addEventListener('mouseenter', () => clearInterval(skillAutoplay));
+        skillsCarousel.addEventListener('mouseleave', startAutoplay);
+
+        startAutoplay();
+        updateSkills();
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        resizeCanvas();
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
